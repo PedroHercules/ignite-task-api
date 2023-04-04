@@ -1,8 +1,11 @@
 import http from 'node:http'
 import { routes } from './routes.js'
+import { appJson } from './middlewares/app-json.js'
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const { method, url } = req
+
+  await appJson(req, res)
 
   const route = routes.find(route => {
     return route.path === url && route.method === method
