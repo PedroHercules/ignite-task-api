@@ -19,7 +19,8 @@ export const routes = [
       database.create('tasks', { 
         id: randomUUID(), 
         title, 
-        description 
+        description,
+        completed_at: null,
       })
       res.writeHead(201).end('Task created!')
     }
