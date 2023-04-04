@@ -22,7 +22,12 @@ export class Database {
   create(table, data) {
     console.log('create', table, data)
     const isEmpty = !this.#database[table] || this.#database[table].length === 0
-    isEmpty ? this.#database[table] = [data] : this.#database[table].push(data)
+    const storeData = {
+      ...data,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }
+    isEmpty ? this.#database[table] = [data] : this.#database[table].push(storeData)
     this.#persist()
   }
 
@@ -47,7 +52,8 @@ export class Database {
     if (rowIndex === -1) {
       throw new Error(`Não existe um registro com o id ${id} na tabela ${table}!`)
     }
-    this.#database[table][rowIndex] = {id, ...data}
+    const updated_at = new Date()
+    this.#database[table][rowIndex] = {id, ...data, updated_at}
     this.#persist()
 
     return true
