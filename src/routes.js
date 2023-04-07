@@ -49,7 +49,7 @@ export const routes = [
       try {
         validateForm(req.body, res)
         database.update('tasks', req.params.id, req.body)
-        res.writeHead(200).end('Task updated!')
+        res.writeHead(200).end(JSON.stringify({ message: 'Task updated!' }))
       } catch (error) {
         const [message, status] = error.message.split(',')
         const statusCode = status || res.statusCode
@@ -63,7 +63,7 @@ export const routes = [
     handler: (req, res) => {
       try {
         database.delete('tasks', req.params.id)
-        res.writeHead(200).end('Task deleted!')
+        res.writeHead(200).end(JSON.stringify({ message: 'Task deleted!' }))
       } catch (error) {
         const [message, status] = error.message.split(',')
         return res.writeHead(status || 500).end(JSON.stringify({ message }))
@@ -82,7 +82,7 @@ export const routes = [
           completed_at = new Date()
         }
         database.updateStatus('tasks', req.params.id, { completed_at })
-        res.writeHead(200).end('Task updated!')
+        res.writeHead(200).end(JSON.stringify({ message: 'Task status updated!' }))
       } catch (error) {
         const [message, status] = error.message.split(',')
         return res.writeHead(status || 500).end(JSON.stringify({ message }))
