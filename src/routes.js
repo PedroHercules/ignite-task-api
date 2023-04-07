@@ -4,19 +4,31 @@ import { randomUUID } from 'node:crypto'
 
 const database = new Database()
 
+function validateForm(body, res) {
+  if (!body.title || !body.description) {
+    res.statusCode = 400
+    throw new Error('Title and description fields are required!')
+  }
+}
+
 export const routes = [
   {
     method: 'POST',
     path: buildRoutePath('/task'),
     handler: (req, res) => {
-      const { title, description } = req.body
-      database.create('tasks', { 
-        id: randomUUID(), 
-        title, 
-        description,
-        completed_at: null,
-      })
-      res.writeHead(201).end('Task created!')
+      try {
+        validateForm(req.body, res)
+        const { title, description } = req.body
+        database.create('tasks', { 
+          id: randomUUID(), 
+          title, 
+          description,
+          completed_at: null,
+        })
+        return res.writeHead(201).end(JSON.stringify({ message: 'Task created!' }))
+      } catch (error) {
+        return res.writeHead(res.statusCode || 500).end(JSON.stringify({ message: error.message }))
+      }
     }
   },
   {
@@ -33,11 +45,13 @@ export const routes = [
     path: buildRoutePath('/task/:id'),
     handler: (req, res) => {
       try {
+        validateForm(req.body, res)
         database.update('tasks', req.params.id, req.body)
         res.writeHead(200).end('Task updated!')
       } catch (error) {
         const [message, status] = error.message.split(',')
-        return res.writeHead(status || 500).end(JSON.stringify({ message }))
+        const statusCode = status || res.statusCode
+        return res.writeHead(statusCode || 500).end(JSON.stringify({ message }))
       }
     }
   },
