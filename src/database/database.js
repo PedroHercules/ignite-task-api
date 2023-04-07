@@ -48,12 +48,24 @@ export class Database {
   }
 
   update(table, id, data) {
-    const rowIndex = this.#database[table].findIndex(row => row.id === id)
+    const rowIndex = this.#database[table].findIndex((row) => row.id === id)
     if (rowIndex === -1) {
-      throw new Error(`Não existe um registro com o id ${id} na tabela ${table}!`)
+      const message = `Não existe um registro com o id ${id} na tabela ${table}!`
+      const status = 404
+      const error = message.concat(',', status)
+      throw new Error(error)
     }
     const updated_at = new Date()
-    this.#database[table][rowIndex] = {id, ...data, updated_at}
+    const row = this.#database[table][rowIndex]
+    const updatedRow = {
+      id,
+      title: data.title || row.title,
+      description: data.description || row.description,
+      completed_at: data.completed_at || row.completed_at,
+      created_at: row.created_at,
+      updated_at,
+    }
+    this.#database[table][rowIndex] = updatedRow
     this.#persist()
 
     return true
@@ -62,7 +74,9 @@ export class Database {
   delete(table, id) {
     const rowIndex = this.#database[table].findIndex(row => row.id === id)
     if (rowIndex === -1) {
-      throw new Error(`Não existe um registro com o id ${id} na tabela ${table}!`)
+      const error = `NOT FOUND: Não existe um registro com o id ${id} na tabela ${table}!`
+      const status = 404
+      throw new Error(error, status)
     }
     this.#database[table].splice(rowIndex, 1)
     this.#persist()

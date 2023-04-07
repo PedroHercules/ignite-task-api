@@ -32,8 +32,13 @@ export const routes = [
     method: 'PUT',
     path: buildRoutePath('/task/:id'),
     handler: (req, res) => {
-      console.log(req.params)
-      return res.end('PUT')
+      try {
+        database.update('tasks', req.params.id, req.body)
+        res.writeHead(200).end('Task updated!')
+      } catch (error) {
+        const [message, status] = error.message.split(',')
+        return res.writeHead(status || 500).end(JSON.stringify({ message }))
+      }
     }
   }
 ]
