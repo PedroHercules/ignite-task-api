@@ -53,5 +53,24 @@ export const routes = [
         return res.writeHead(status || 500).end(JSON.stringify({ message }))
       }
     }
+  },
+  {
+    method: 'PATCH',
+    path: buildRoutePath('/task/:id/status'),
+    handler: (req, res) => {
+      try {
+        const task = database.findOne('tasks', req.params.id)
+        let completed_at = null
+        if (!task.completed_at) {
+          console.log('task.completed_at', task.completed_at)
+          completed_at = new Date()
+        }
+        database.updateStatus('tasks', req.params.id, { completed_at })
+        res.writeHead(200).end('Task updated!')
+      } catch (error) {
+        const [message, status] = error.message.split(',')
+        return res.writeHead(status || 500).end(JSON.stringify({ message }))
+      }
+    }
   }
 ]

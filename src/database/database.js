@@ -47,6 +47,17 @@ export class Database {
     return data
   }
 
+  findOne(table, id) {
+    const row = this.#database[table].find(row => row.id === id)
+    if (!row) {
+      const message = `Não existe um registro com o id ${id} na tabela ${table}!`
+      const status = 404
+      const error = message.concat(',', status)
+      throw new Error(error)
+    }
+    return row
+  }
+
   update(table, id, data) {
     const rowIndex = this.#database[table].findIndex((row) => row.id === id)
     if (rowIndex === -1) {
@@ -70,6 +81,22 @@ export class Database {
 
     return true
   }
+
+  updateStatus(table, id, data) {
+    const rowIndex = this.#database[table].findIndex((row) => row.id === id)
+    if (rowIndex === -1) {
+      const message = `Não existe um registro com o id ${id} na tabela ${table}!`
+      const status = 404
+      const error = message.concat(',', status)
+      throw new Error(error)
+    }
+    const updated_at = new Date()
+    const row = this.#database[table][rowIndex]
+    this.#database[table][rowIndex].completed_at = data.completed_at
+    this.#database[table][rowIndex].updated_at = updated_at
+    this.#persist()
+  }
+      
 
   delete(table, id) {
     const rowIndex = this.#database[table].findIndex(row => row.id === id)
