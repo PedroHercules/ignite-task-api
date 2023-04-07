@@ -74,9 +74,10 @@ export class Database {
   delete(table, id) {
     const rowIndex = this.#database[table].findIndex(row => row.id === id)
     if (rowIndex === -1) {
-      const error = `NOT FOUND: Não existe um registro com o id ${id} na tabela ${table}!`
+      const message = `Não existe um registro com o id ${id} na tabela ${table}!`
       const status = 404
-      throw new Error(error, status)
+      const error = message.concat(',', status)
+      throw new Error(error)
     }
     this.#database[table].splice(rowIndex, 1)
     this.#persist()

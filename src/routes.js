@@ -40,5 +40,18 @@ export const routes = [
         return res.writeHead(status || 500).end(JSON.stringify({ message }))
       }
     }
+  },
+  {
+    method: 'DELETE',
+    path: buildRoutePath('/task/:id'),
+    handler: (req, res) => {
+      try {
+        database.delete('tasks', req.params.id)
+        res.writeHead(200).end('Task deleted!')
+      } catch (error) {
+        const [message, status] = error.message.split(',')
+        return res.writeHead(status || 500).end(JSON.stringify({ message }))
+      }
+    }
   }
 ]
