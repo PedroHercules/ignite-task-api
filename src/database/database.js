@@ -27,7 +27,7 @@ export class Database {
       created_at: new Date(),
       updated_at: new Date(),
     }
-    isEmpty ? this.#database[table] = [data] : this.#database[table].push(storeData)
+    isEmpty ? this.#database[table] = [storeData] : this.#database[table].push(storeData)
     this.#persist()
   }
 
