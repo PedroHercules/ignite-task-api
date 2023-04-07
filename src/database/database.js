@@ -32,19 +32,20 @@ export class Database {
   }
 
   findAll(table, query) {
-    let data = this.#database[table] || []
+    const data = this.#database[table] || []
 
     if (!query) {
+      console.log('query', query)
       return data
     }
-
-    data = data.filter(row => {
-      return Object.keys(query).some(([key, value]) => {
-        return row[key].toLowerCase().includes(value.toLowerCase())
+    console.log('query', query)
+    const dataFiltered = data.filter(row => {
+      return Object.entries(query).some(([key, value]) => {
+        return row[key]?.toLowerCase().includes(value?.toLowerCase())
       })
     })
 
-    return data
+    return dataFiltered
   }
 
   findOne(table, id) {

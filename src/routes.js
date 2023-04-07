@@ -35,7 +35,9 @@ export const routes = [
     method: 'GET',
     path: buildRoutePath('/tasks'),
     handler: (req, res) => {
-      const tasks = database.findAll('tasks')
+      const { search } = req.query
+      const filters = search ? { title: search, description: search } : null
+      const tasks = database.findAll('tasks', filters)
       res.writeHead(200, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify(tasks))
     }
