@@ -1,4 +1,4 @@
-import { buildRoutePath } from "../utils/build-route-path.js"
+import { buildRoutePath } from "./utils/build-route-path.js"
 import { Database } from "./database/database.js"
 import { randomUUID } from 'node:crypto'
 
